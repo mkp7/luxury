@@ -13,6 +13,7 @@
   "author": "Mehulkumar",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "express": "^4.17.0",
     "pg": "^7.11.0"
   }
