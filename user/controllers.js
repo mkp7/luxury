@@ -1,8 +1,7 @@
-const router = require('express').Router()
+const { CreateUser, GetUser } = require('./models')
 const bcrypt = require('bcrypt')
-const { CreateUser, GetUser } = require('../models/user')
 
-router.post('/register', function (req, res, next) {
+const UserRegister = function (req, res) {
   bcrypt.hash(req.body.password, 9, async function (err, hash) {
     if (err) throw err
 
@@ -14,9 +13,9 @@ router.post('/register', function (req, res, next) {
     console.log(user)
     res.json(user)
   })
-})
+}
 
-router.post('/login', async function (req, res, next) {
+const UserLogin = async function (req, res) {
   const user = await GetUser(req.body)
   bcrypt.compare(req.body.password, user.phash, function (err, res) {
     if (err) throw err
@@ -25,6 +24,6 @@ router.post('/login', async function (req, res, next) {
 
     res.json(res ? user : null)
   })
-})
+}
 
-module.exports = router
+module.exports = { UserRegister, UserLogin }
