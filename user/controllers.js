@@ -1,29 +1,29 @@
 const { CreateUser, GetUser } = require('./models')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-const UserRegister = function (req, res) {
-  bcrypt.hash(req.body.password, 9, async function (err, hash) {
-    if (err) throw err
+const UserRegister = async function (req, res) {
+  // check for errors
+  req.body.phash = await bcrypt.hash(req.body.password, 9)
 
-    req.body.phash = hash
-    const user = await CreateUser(req.body)
+  // check for errors
+  const user = await CreateUser(req.body)
 
-    // check for errors
-
-    console.log(user)
-    res.json(user)
-  })
+  console.log(user)
+  res.json(user)
 }
 
 const UserLogin = async function (req, res) {
+  // check for errors
   const user = await GetUser(req.body)
-  bcrypt.compare(req.body.password, user.phash, function (err, res) {
-    if (err) throw err
 
-    // check for errors
+  // check for errors
+  const match = await bcrypt.compare(req.body.password, user.phash)
 
-    res.json(res ? user : null)
-  })
+  // sign with RSA SHA256
+  const token = jwt.sign({ id: user.id, name: user.name, phone: user.phone }, process.env.KEY, { algorithm: 'HS256' })
+
+  res.json(match ? { user, token } : null)
 }
 
 module.exports = { UserRegister, UserLogin }
