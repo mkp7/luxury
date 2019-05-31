@@ -1,8 +1,17 @@
 const { Client } = require('pg')
 
-const client = new Client({
-  database: 'luxury'
-})
+let client
+if (process.env.DATABASE_URL) {
+  client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  })
+} else {
+  client = new Client({
+    database: 'luxury'
+  })
+}
+
 client.connect()
 
 async function CreateUser (user) {
