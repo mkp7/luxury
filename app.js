@@ -8,6 +8,4 @@ app.use(express.json())
 // user routes
 app.use('/user', user)
 
-console.log(process.env.KEY)
-
 module.exports = app
